@@ -5,6 +5,7 @@ namespace App\Orchid\Layouts\Publication;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Layouts\Rows;
+use App\Models\Publication;
 
 class PublicationEditLayout extends Rows
 {
@@ -13,6 +14,14 @@ class PublicationEditLayout extends Rows
      *
      * @return array
      */
+
+    public function query(int $publication_id): iterable
+    {
+        return [
+            'publication' => Publication::findOrFail($publication_id),
+        ];
+    }
+
     protected function fields(): array
     {
         return [

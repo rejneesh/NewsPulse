@@ -14,54 +14,34 @@ use App\Orchid\Layouts\Publication\PublicationEditLayout;
 
 class PublicationEditScreen extends Screen
 {
-    /**
-     * Display header name.
-     *
-     * @return string
-     */
-    public function name(): ?string
-    {
-        return 'Edit Publication';
-    }
+    public $publication;
 
-    /**
-     * Query data.
-     *
-     * @param Publication $publication
-     *
-     * @return array
-     */
     public function query(Publication $publication): array
     {
         return [
             'publication' => $publication,
         ];
     }
+    public function name(): ?string
+    {
+        return $this->publication->exists ? 'Edit Publication' : 'Create Publication';
+    }
 
-    /**
-     * Button commands.
-     *
-     * @return \Orchid\Screen\Action[]
-     */
     public function commandBar(): array
     {
         return [
-            Button::make('Create')
+            Button::make('Save')
                 ->icon('check')
                 ->method('save'),
 
-            // Button::make('Remove')
+            // Button::make('Delete')
             //     ->icon('trash')
             //     ->method('remove')
             //     ->canSee($this->publication->exists),
         ];
     }
 
-    /**
-     * Views.
-     *
-     * @return string[]|\Orchid\Screen\Layout[]
-     */
+
     public function layout(): array
     {
         return [
@@ -69,12 +49,7 @@ class PublicationEditScreen extends Screen
         ];
     }
 
-    /**
-     * @param Request $request
-     * @param Publication $publication
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function save(Request $request, Publication $publication)
     {
         $request->validate([
@@ -90,11 +65,7 @@ class PublicationEditScreen extends Screen
         return redirect()->route('platform.publications');
     }
 
-    /**
-     * @param Publication $publication
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function remove(Publication $publication)
     {
         $publication->delete();

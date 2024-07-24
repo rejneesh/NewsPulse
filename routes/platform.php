@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 use App\Orchid\Screens\PublicationScreen\PublicationListScreen;
 use App\Orchid\Screens\PublicationScreen\PublicationEditScreen;
+use App\Http\Controllers\PublicationController;
 /*
 |--------------------------------------------------------------------------
 | Dashboard Routes
@@ -105,3 +106,4 @@ Route::screen('publications', PublicationListScreen::class)->name('platform.publ
 // Create/Edit Screen
 Route::screen('publication/create', PublicationEditScreen::class)->name('platform.publication.create');
 Route::screen('publication/{publication}/edit', PublicationEditScreen::class)->name('platform.publication.edit');
+Route::post('publication/{publication}/delete', [PublicationController::class, 'destroy'])->name('platform.publication.delete');

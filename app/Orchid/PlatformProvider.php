@@ -30,9 +30,9 @@ class PlatformProvider extends OrchidServiceProvider
         return [
 
             Menu::make('Publications')
-            ->title('Form controls')
-            ->icon('note')
-            ->route('platform.publications'),
+                ->title('Navigation')
+                ->icon('note')
+                ->route('platform.publications'),
 
             Menu::make('Example screen')
                 ->icon('monitor')
@@ -74,10 +74,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.example.cards')
                 ->divider(),
 
-            Menu::make('Documentation')
-                ->title('Docs')
-                ->icon('docs')
-                ->url('https://orchid.software/en/docs'),
 
             Menu::make('Changelog')
                 ->icon('shuffle')
