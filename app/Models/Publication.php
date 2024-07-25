@@ -27,6 +27,6 @@ class Publication extends Model
     // Define relationships here if any
     public function rssFeedEndpoints()
     {
-        return $this->hasMany(PublicationRssFeedEndpoint::class, 'publication_id');
+        return $this->hasMany(RssFeedEndpoint::class, 'publication_url');
     }
 }

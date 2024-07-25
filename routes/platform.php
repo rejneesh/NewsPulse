@@ -20,6 +20,10 @@ use Tabuna\Breadcrumbs\Trail;
 use App\Orchid\Screens\PublicationScreen\PublicationListScreen;
 use App\Orchid\Screens\PublicationScreen\PublicationEditScreen;
 use App\Http\Controllers\PublicationController;
+
+use App\Orchid\Screens\Rss\RssFeedEndpointListScreen;
+use App\Orchid\Screens\Rss\RssFeedEndpointEditScreen;
+use App\Http\Controllers\RssFeedEndpointController;
 /*
 |--------------------------------------------------------------------------
 | Dashboard Routes
@@ -98,12 +102,21 @@ Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platfor
 Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
-//Route::screen('idea', Idea::class, 'platform.screens.idea');
-//Route::screen('publication/{publication?}', PublicationListScreen::class)->name('platform.publication');
 
+// publications endpoints
 Route::screen('publications', PublicationListScreen::class)->name('platform.publications');
-
-// Create/Edit Screen
 Route::screen('publication/create', PublicationEditScreen::class)->name('platform.publication.create');
 Route::screen('publication/{publication}/edit', PublicationEditScreen::class)->name('platform.publication.edit');
 Route::post('publication/{publication}/delete', [PublicationController::class, 'destroy'])->name('platform.publication.delete');
+
+// RSS Feed Endpoints
+Route::screen('rssfeedendpoints', RssFeedEndpointListScreen::class)->name('platform.rssfeedendpoints');
+Route::screen('rssfeedendpoint/create', RssFeedEndpointEditScreen::class)->name('platform.rssfeedendpoint.create');
+Route::screen('rssfeedendpoint/{rssendpoint}/edit', RssFeedEndpointEditScreen::class)->name('platform.rssfeedendpoint.edit');
+Route::post('rssfeedendpoint/{rssendpoint}/delete', [RssFeedEndpointController::class, 'destroy'])->name('platform.rssfeedendpoint.delete');
+
+// Route::screen('rss_feed_endpoints', RssFeedEndpointListScreen::class)->name('platform.rss_feed_endpoints');
+
+// Route::screen('rss_feed_endpoint/create', RssFeedEndpointEditScreen::class)->name('platform.rss_feed_endpoint.create');
+// Route::screen('rss_feed_endpoint/{rss_feed_endpoint}/edit', RssFeedEndpointEditScreen::class)->name('platform.rss_feed_endpoint.edit');
+// Route::post('rss_feed_endpoint/{rss_feed_endpoint}/delete', [RssFeedEndpointController::class, 'destroy'])->name('platform.rss_feed_endpoint.delete');

@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Orchid\Screen\AsSource;
 
 class RssFeed extends Model
 {
-    use HasFactory;
+    use HasFactory, AsSource;
 
     protected $table = 'rss_feed';
 
@@ -37,6 +37,6 @@ class RssFeed extends Model
     // Define relationships here if any
     public function newsArticles()
     {
-        return $this->hasMany(NewsArticle::class, 'rss_endpoint_id');
+        return $this->hasMany(NewsArticle::class, 'rss_feed_endpoint_id');
     }
 }

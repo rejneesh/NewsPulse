@@ -28,11 +28,16 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
+            Menu::make('RSS Endpoints')
+                ->title('Navigation')
+                ->icon('eye')
+                ->route('platform.rssfeedendpoints'),
 
             Menu::make('Publications')
                 ->title('Navigation')
                 ->icon('note')
                 ->route('platform.publications'),
+
 
             Menu::make('Example screen')
                 ->icon('monitor')
@@ -40,12 +45,12 @@ class PlatformProvider extends OrchidServiceProvider
                 ->title('Navigation')
                 ->badge(fn () => 6),
 
-            Menu::make('Dropdown menu')
-                ->icon('code')
-                ->list([
-                    Menu::make('Sub element item 1')->icon('bag'),
-                    Menu::make('Sub element item 2')->icon('heart'),
-                ]),
+            // Menu::make('Dropdown menu')
+            //     ->icon('code')
+            //     ->list([
+            //         Menu::make('Sub element item 1')->icon('bag'),
+            //         Menu::make('Sub element item 2')->icon('heart'),
+            //     ]),
 
             Menu::make('Basic Elements')
                 ->title('Form controls')

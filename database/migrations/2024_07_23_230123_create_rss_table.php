@@ -11,26 +11,28 @@ class CreateRssTable extends Migration
         // Create publication table
         Schema::create('publication', function (Blueprint $table) {
             $table->bigIncrements('publication_id');
-            $table->string('publication_name');
-            $table->string('publication_url');
+            $table->string('publication_name')->unique();
+            $table->string('publication_url')->unique();
             $table->integer('publication_rank')->default(0);
             $table->json('key_map')->nullable();
             $table->timestamps();
         });
 
+
         // Create publication_rss_feed_endpoint table
-        Schema::create('publication_rss_feed_endpoint', function (Blueprint $table) {
-            $table->bigIncrements('rss_endpoint_id');
-            $table->bigInteger('publication_id')->unsigned();
-            $table->string('endpoint')->unique();
-            $table->string('name')->nullable();
-            $table->jsonb('best_fetch_time')->nullable();
+        Schema::create('rss_feed_endpoint', function (Blueprint $table) {
+            $table->bigIncrements('rss_feed_endpoint_id');
+            //     $table->bigInteger('publication_id')->unsigned();
+            $table->string('publication_url');
+            $table->string('endpoint');
+            $table->string('note')->nullable();
             $table->timestamp('last_fetched')->nullable();
+            $table->tinyInteger('last_fetched_status')->default(0);
             $table->timestamps();
 
             // Foreign key constraint
-            $table->foreign('publication_id')
-                ->references('publication_id')
+            $table->foreign('publication_url')
+                ->references('publication_url')
                 ->on('publication')
                 ->onDelete('cascade');
         });
@@ -39,7 +41,7 @@ class CreateRssTable extends Migration
         Schema::create('rss_feed', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('publication_id')->unsigned();
-            $table->bigInteger('rss_endpoint_id')->unsigned();
+            $table->bigInteger('rss_feed_endpoint_id')->unsigned();
             $table->string('title');
             $table->string('link')->unique();
             $table->text('description')->nullable();
@@ -55,9 +57,9 @@ class CreateRssTable extends Migration
                 ->on('publication')
                 ->onDelete('cascade');
 
-            $table->foreign('rss_endpoint_id')
-                ->references('rss_endpoint_id')
-                ->on('publication_rss_feed_endpoint')
+            $table->foreign('rss_feed_endpoint_id')
+                ->references('rss_feed_endpoint_id')
+                ->on('rss_feed_endpoint')
                 ->onDelete('cascade');
         });
 
@@ -65,7 +67,7 @@ class CreateRssTable extends Migration
         Schema::create('news_article', function (Blueprint $table) {
             $table->bigIncrements('post_id');
             $table->bigInteger('publication_id')->unsigned();
-            $table->bigInteger('rss_endpoint_id')->unsigned();
+            $table->bigInteger('rss_feed_endpoint_id')->unsigned();
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('h1')->nullable();
@@ -88,9 +90,9 @@ class CreateRssTable extends Migration
                 ->on('publication')
                 ->onDelete('cascade');
 
-            $table->foreign('rss_endpoint_id')
-                ->references('rss_endpoint_id')
-                ->on('publication_rss_feed_endpoint')
+            $table->foreign('rss_feed_endpoint_id')
+                ->references('rss_feed_endpoint_id')
+                ->on('rss_feed_endpoint')
                 ->onDelete('cascade');
         });
     }
@@ -99,7 +101,7 @@ class CreateRssTable extends Migration
     {
         Schema::dropIfExists('news_article');
         Schema::dropIfExists('rss_feed');
-        Schema::dropIfExists('publication_rss_feed_endpoint');
+        Schema::dropIfExists('rss_feed_endpoint');
         Schema::dropIfExists('publication');
     }
 }
