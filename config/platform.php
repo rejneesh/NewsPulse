@@ -113,9 +113,13 @@ return [
     |
     */
 
-    'resource'      => [
-        'stylesheets' => [],
-        'scripts'     => [],
+    'resource' => [
+        'stylesheets' => [
+            'http://newspulse.test/overwrite.css',
+        ],
+        'scripts'     => [
+            //    'https://example.com/js/app.js',
+        ],
     ],
 
     /*
@@ -217,7 +221,7 @@ return [
     */
 
     'search'        => [
-        // \App\Models\User::class
+        //  \App\Models\User::class
     ],
 
     /*
@@ -250,10 +254,6 @@ return [
 
     'fallback'      => true,
 
-    'toast' => [
-        'position' => 'bottom-left', // Set the position to bottom-left
-        'duration' => 5000, // Duration for toast to be visible (in milliseconds)
-    ],
     /*
     |--------------------------------------------------------------------------
     | Service Provider

@@ -34,7 +34,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.rssfeedendpoints'),
 
             Menu::make('Publications')
-                ->title('Navigation')
                 ->icon('note')
                 ->route('platform.publications'),
 
