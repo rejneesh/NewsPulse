@@ -31,10 +31,17 @@ class CreateRssTable extends Migration
             $table->timestamps();
 
             // Foreign key constraint
+            // $table->foreign('publication_url')
+            //     ->references('publication_url')
+            //     ->on('publication')
+            //     ->onDelete('cascade');
+
             $table->foreign('publication_url')
                 ->references('publication_url')
                 ->on('publication')
-                ->onDelete('cascade');
+                ->onDelete('restrict'); // Prevents deletion if there are related records
+
+            $table->unique(['publication_url', 'endpoint']);
         });
 
         // Create rss_feed table
@@ -45,7 +52,7 @@ class CreateRssTable extends Migration
             $table->string('title');
             $table->string('link')->unique();
             $table->text('description')->nullable();
-            $table->json('category')->nullable();
+            $table->json('category')->nullable()->default(json_encode([]));
             $table->string('guid')->unique();
             $table->timestamp('pub_date')->nullable();
             $table->timestamps();
@@ -55,12 +62,12 @@ class CreateRssTable extends Migration
             $table->foreign('publication_id')
                 ->references('publication_id')
                 ->on('publication')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->foreign('rss_feed_endpoint_id')
                 ->references('rss_feed_endpoint_id')
                 ->on('rss_feed_endpoint')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
         });
 
         // Create news_article table
@@ -88,12 +95,12 @@ class CreateRssTable extends Migration
             $table->foreign('publication_id')
                 ->references('publication_id')
                 ->on('publication')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->foreign('rss_feed_endpoint_id')
                 ->references('rss_feed_endpoint_id')
                 ->on('rss_feed_endpoint')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
         });
     }
 

@@ -28,14 +28,19 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            Menu::make('RSS Endpoints')
+            Menu::make('Rss Feeds')
                 ->title('Navigation')
+                ->icon('note')
+                ->route('platform.rssfeeds'),
+
+            Menu::make('RSS Endpoints')
                 ->icon('eye')
                 ->route('platform.rssfeedendpoints'),
 
             Menu::make('Publications')
                 ->icon('note')
                 ->route('platform.publications'),
+
 
 
             Menu::make('Example screen')

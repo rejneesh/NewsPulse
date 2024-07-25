@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Orchid\Layouts\Publication;
-
+use Orchid\Screen\Fields\Code;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Layouts\Rows;
@@ -45,9 +45,10 @@ class PublicationEditLayout extends Rows
                 ->title('Publication Rank')
                 ->placeholder('Enter publication rank'),
 
-            TextArea::make('publication.key_map')
+                Code::make('publication.key_map')
                 ->title('Key Map')
                 ->rows(6)
+                ->mode('json') 
                 ->placeholder('Enter key map JSON data'),
         ];
     }

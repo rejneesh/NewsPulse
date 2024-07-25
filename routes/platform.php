@@ -24,6 +24,8 @@ use App\Http\Controllers\PublicationController;
 use App\Orchid\Screens\Rss\RssFeedEndpointListScreen;
 use App\Orchid\Screens\Rss\RssFeedEndpointEditScreen;
 use App\Http\Controllers\RssFeedEndpointController;
+
+use App\Orchid\Screens\Feed\RssFeedListScreen;
 /*
 |--------------------------------------------------------------------------
 | Dashboard Routes
@@ -115,6 +117,7 @@ Route::screen('rssfeedendpoint/create', RssFeedEndpointEditScreen::class)->name(
 Route::screen('rssfeedendpoint/{rssendpoint}/edit', RssFeedEndpointEditScreen::class)->name('platform.rssfeedendpoint.edit');
 Route::post('rssfeedendpoint/{rssendpoint}/delete', [RssFeedEndpointController::class, 'destroy'])->name('platform.rssfeedendpoint.delete');
 
+Route::screen('rssfeeds', RssFeedListScreen::class)->name('platform.rssfeeds');
 // Route::screen('rss_feed_endpoints', RssFeedEndpointListScreen::class)->name('platform.rss_feed_endpoints');
 
 // Route::screen('rss_feed_endpoint/create', RssFeedEndpointEditScreen::class)->name('platform.rss_feed_endpoint.create');
