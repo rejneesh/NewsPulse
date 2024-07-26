@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens\PublicationScreen;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\Publication;
 use Orchid\Screen\Actions\Button;
@@ -12,6 +13,11 @@ use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 use App\Orchid\Layouts\Publication\PublicationEditLayout;
 use Orchid\Screen\Fields\Code;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Validation\ValidationException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\TransferException;
 
 class PublicationEditScreen extends Screen
 {
@@ -53,7 +59,7 @@ class PublicationEditScreen extends Screen
 
     public function save(Request $request, Publication $publication)
     {
-        $request->validate([
+        $data = $request->validate([
             'publication.publication_name' => 'required|string|max:255',
             'publication.publication_url' => [
                 'required',
@@ -62,15 +68,32 @@ class PublicationEditScreen extends Screen
             ],
             'publication.publication_rank' => 'required|integer',
             'publication.key_map' => 'nullable|json',
+        ], [
+            'publication.publication_url.required' => 'The publication URL is required.',
+            'publication.publication_url.url' => 'The publication URL must be a valid URL.',
+            'publication.publication_url.regex' => 'The publication URL must not end with a trailing slash. "/"',
         ]);
 
-        $publication->fill($request->input('publication'))->save();
+        $url = $data['publication']['publication_url'];
+
+        if (!$this->urlExists($url)) {
+            return redirect()->back()->withErrors([
+                'publication.publication_url' => 'The URL does not exist or cannot be reached.',
+            ]);
+        }
+
+        $publication->fill($data['publication'])->save();
 
         Toast::info(__('Publication was saved.'));
 
         return redirect()->route('platform.publications');
     }
 
+    protected function urlExists($url)
+    {
+        $headers = @get_headers($url);
+        return $headers && strpos($headers[0], '200');
+    }
 
     public function remove(Publication $publication)
     {

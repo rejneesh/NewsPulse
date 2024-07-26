@@ -1,5 +1,5 @@
 <?php
-//php artisan fetch:rssfeed
+// php artisan fetch:rssfeed
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -20,33 +20,43 @@ class FetchRssFeed extends Command
 
     public function handle()
     {
-        // Get all RSS feed endpoints
-        $endpoints = RssFeedEndpoint::all();
+        while (true) {
+            // Get all RSS feed endpoints
+            $endpoints = RssFeedEndpoint::all();
 
-        foreach ($endpoints as $endpoint) {
-            $url = $this->buildUrl($endpoint);
+            foreach ($endpoints as $endpoint) {
+                $url = $this->buildUrl($endpoint);
 
-            // Fetch the RSS feed
-            $response = Http::get($url);
+                try {
+                    // Fetch the RSS feed
+                    $response = Http::timeout(10)->get($url);
 
-            $statusCode = $response->status(); // Get the HTTP status code
+                    $statusCode = $response->status(); // Get the HTTP status code
 
-            if ($response->successful()) {
-                $rssFeed = simplexml_load_string($response->body());
+                    if ($response->successful()) {
+                        $rssFeed = simplexml_load_string($response->body());
 
-                if ($rssFeed === false) {
-                    $this->error("Failed to parse the RSS feed from URL: $url");
-                    $this->updateEndpoint($endpoint, $statusCode);
-                    continue;
+                        if ($rssFeed === false) {
+                            $this->error("Failed to parse the RSS feed from URL: $url");
+                            $this->updateEndpoint($endpoint, $statusCode);
+                            continue;
+                        }
+
+                        $this->storeRssFeed($rssFeed, $endpoint);
+                        $this->info("RSS feed fetched and stored successfully from URL: $url");
+                        $this->updateEndpoint($endpoint, $statusCode);
+                    } else {
+                        $this->error("Failed to fetch the RSS feed from URL: $url. Status code: $statusCode");
+                        $this->updateEndpoint($endpoint, $statusCode);
+                    }
+                } catch (\Exception $e) {
+                    $this->error("An error occurred while fetching the RSS feed from URL: $url. Error: " . $e->getMessage());
+                    $this->updateEndpoint($endpoint, 0); // Use 0 to indicate a network error or timeout
                 }
-
-                $this->storeRssFeed($rssFeed, $endpoint);
-                $this->info("RSS feed fetched and stored successfully from URL: $url");
-                $this->updateEndpoint($endpoint, $statusCode);
-            } else {
-                $this->error("Failed to fetch the RSS feed from URL: $url. Status code: $statusCode");
-                $this->updateEndpoint($endpoint, $statusCode);
             }
+
+            // Sleep for a specific number of seconds before the next run
+            sleep(58); // Adjust the number of seconds as needed
         }
     }
 

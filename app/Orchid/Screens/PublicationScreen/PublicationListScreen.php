@@ -14,6 +14,7 @@ use Orchid\Support\Facades\Toast;
 use App\Orchid\Layouts\Publication\PublicationListLayout;
 use App\Orchid\Layouts\Publication\PublicationFiltersLayout;
 use App\Orchid\Layouts\Publication\PublicationEditLayout;
+use App\Models\RssFeedEndpoint;
 
 class PublicationListScreen extends Screen
 {
@@ -109,33 +110,29 @@ class PublicationListScreen extends Screen
      * @param Request $request
      * @param Publication $publication
      */
-    public function savePublication(Request $request, Publication $publication): void
-    {
-        $request->validate([
-            'publication.publication_name' => 'required|string|max:255',
-            'publication.publication_url' => 'required|string|max:255',
-            'publication.publication_rank' => 'required|integer',
+    // public function savePublication(Request $request, Publication $publication): void
+    // {
+    //     $request->validate([
+    //         'publication.publication_name' => 'required|string|max:255',
+    //         'publication.publication_url' => 'required|string|max:255',
+    //         'publication.publication_rank' => 'required|integer',
+    //         'publication.key_map' => 'nullable|json',
+    //     ]);
 
-            // 'publication.publication_name' => 'required|string|max:255',
-            // 'publication.publication_url' => 'required|url',
-            // 'publication.publication_rank' => 'required|integer',
-            // 'publication.key_map' => 'nullable|json',
-        ]);
+    //     $publication->fill($request->input('publication'))->save();
 
-        $publication->fill($request->input('publication'))->save();
+    //     Toast::info(__('Publication was saved.'));
+    // }
 
-        Toast::info(__('Publication was saved.'));
-    }
-
-    /**
-     * Remove a publication.
-     *
-     * @param Request $request
-     */
     public function remove(Request $request): void
     {
-        Publication::findOrFail($request->get('id'))->delete();
-
-        Toast::info(__('Publication was removed.'));
+        $pubUrl = Publication::where('publication_id', $request->get('id'))->first();
+        $relatedEndpoints = RssFeedEndpoint::where('publication_url', $pubUrl->publication_url)->count();
+        if ($relatedEndpoints == 0) {
+            Publication::findOrFail($request->get('id'))->delete();
+            Toast::info(__('Publication was removed.'));
+        } else {
+            Toast::error(__('Cannot delete this publication because there are related RSS feed endpoints associated to the record.'));
+        }
     }
 }

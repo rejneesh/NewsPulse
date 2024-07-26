@@ -12,9 +12,10 @@ class CreateRssTable extends Migration
         Schema::create('publication', function (Blueprint $table) {
             $table->bigIncrements('publication_id');
             $table->string('publication_name')->unique();
-            $table->string('publication_url')->unique();
+            $table->string('publication_url')->unique()->index();;
             $table->integer('publication_rank')->default(0);
             $table->json('key_map')->nullable();
+            $table->boolean('is_dissabled')->default(0);
             $table->timestamps();
         });
 
@@ -23,18 +24,14 @@ class CreateRssTable extends Migration
         Schema::create('rss_feed_endpoint', function (Blueprint $table) {
             $table->bigIncrements('rss_feed_endpoint_id');
             //     $table->bigInteger('publication_id')->unsigned();
-            $table->string('publication_url');
+            $table->string('publication_url')->index();;
             $table->string('endpoint');
             $table->string('note')->nullable();
             $table->timestamp('last_fetched')->nullable();
             $table->tinyInteger('last_fetched_status')->default(0);
+            $table->tinyInteger('priority')->default(0);
+            $table->boolean('is_dissabled')->default(0);
             $table->timestamps();
-
-            // Foreign key constraint
-            // $table->foreign('publication_url')
-            //     ->references('publication_url')
-            //     ->on('publication')
-            //     ->onDelete('cascade');
 
             $table->foreign('publication_url')
                 ->references('publication_url')
@@ -47,33 +44,25 @@ class CreateRssTable extends Migration
         // Create rss_feed table
         Schema::create('rss_feed', function (Blueprint $table) {
             $table->bigIncrements('id');
-        //    $table->bigInteger('publication_id')->unsigned();
             $table->bigInteger('rss_feed_endpoint_id')->unsigned();
             $table->string('title');
-            $table->string('link')->unique();
+            $table->string('link')->unique()->index();;
             $table->text('description')->nullable();
+            $table->string('media_link')->nullable();
             $table->json('category')->nullable()->default(json_encode([]));
             $table->string('guid')->unique();
             $table->timestamp('pub_date')->nullable();
             $table->timestamps();
             $table->boolean('is_processed')->default(0);
-
-            // // Foreign key constraints
-            // $table->foreign('publication_id')
-            //     ->references('publication_id')
-            //     ->on('publication')
-            //     ->onDelete('restrict');
-
             $table->foreign('rss_feed_endpoint_id')
                 ->references('rss_feed_endpoint_id')
                 ->on('rss_feed_endpoint')
-                ->onDelete('restrict');
+                ->onDelete('cascade');
         });
 
         // Create news_article table
         Schema::create('news_article', function (Blueprint $table) {
             $table->bigIncrements('post_id');
-            $table->bigInteger('publication_id')->unsigned();
             $table->bigInteger('rss_feed_endpoint_id')->unsigned();
             $table->string('title');
             $table->text('description')->nullable();
@@ -91,16 +80,10 @@ class CreateRssTable extends Migration
             $table->integer('score')->default(0);
             $table->timestamps(6);
 
-            // Foreign key constraints
-            $table->foreign('publication_id')
-                ->references('publication_id')
-                ->on('publication')
-                ->onDelete('restrict');
-
             $table->foreign('rss_feed_endpoint_id')
                 ->references('rss_feed_endpoint_id')
                 ->on('rss_feed_endpoint')
-                ->onDelete('restrict');
+                ->onDelete('cascade');
         });
     }
 

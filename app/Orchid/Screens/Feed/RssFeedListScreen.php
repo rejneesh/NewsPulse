@@ -17,7 +17,7 @@ class RssFeedListScreen extends Screen
     public function query(): array
     {
         return [
-            'rssfeeds' => RssFeed::orderBy('id', 'asc')->paginate(15), // Adjust the number and column as needed
+            'rssfeeds' => RssFeed::orderBy('pub_date', 'desc')->paginate(15), // Adjust the number and column as needed
         ];
     }
 
@@ -46,7 +46,7 @@ class RssFeedListScreen extends Screen
                 TD::make('pub_date', 'Publication Date')->sort()->render(function (RssFeed $rssFeed) {
                     return $rssFeed->pub_date ? Carbon::parse($rssFeed->pub_date)->format('M d, Y h:i A') : 'N/A';
                 }),
-                
+
                 TD::make('created_at', 'Created At')
                     ->sort()
                     ->render(function (RssFeed $rssFeed) {
@@ -58,9 +58,10 @@ class RssFeedListScreen extends Screen
                         if ($rssFeed->pub_date) {
                             $publishedAt = Carbon::parse($rssFeed->pub_date);
                             $now = Carbon::now();
+                            $diffInSeconds = $now->diffInSeconds($publishedAt);
                             $diffInHours = $now->diffInHours($publishedAt);
-                            $diffInDays = $now->diffInDays($publishedAt);
-                            return $diffInDays > 0 ? "{$diffInDays} days" : "{$diffInHours} hours";
+
+                            return "{$diffInSeconds} Sec ({$diffInHours} Hr)";
                         }
                         return 'N/A';
                     }),
