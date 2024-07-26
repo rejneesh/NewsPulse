@@ -7,6 +7,8 @@ use Orchid\Screen\TD;
 use Orchid\Screen\Layouts\Table;
 use App\Models\RssFeed;
 use Orchid\Support\Facades\Layout;
+use Carbon\Carbon;
+
 class RssFeedListScreen extends Screen
 {
     public $name = 'RSS Feeds';
@@ -15,7 +17,7 @@ class RssFeedListScreen extends Screen
     public function query(): array
     {
         return [
-            'rssfeeds' => RssFeed::all()
+            'rssfeeds' => RssFeed::orderBy('id', 'asc')->paginate(15), // Adjust the number and column as needed
         ];
     }
 
@@ -23,20 +25,45 @@ class RssFeedListScreen extends Screen
     {
         return [
             Layout::table('rssfeeds', [
-         //       TD::make('id', 'ID')->sort(),
+                TD::make('id', 'ID')->sort(),
+                TD::make('is_processed', 'P')->render(function (RssFeed $rssFeed) {
+                    return $rssFeed->is_processed ? 'Y' : 'N';
+                })->sort(),
+                TD::make('link', 'Link')
+                    ->sort()
+                    ->render(function (RssFeed $rssFeed) {
+                        return '<a href="' . $rssFeed->link . '" target="_blank">' . "&#128279;" . '</a>';
+                    }),
                 TD::make('title', 'Title')->sort(),
-                TD::make('link', 'Link')->sort(),
-                TD::make('description', 'Description'),
+
+                //TD::make('description', 'Description'),
                 // TD::make('category', 'Category')->render(function (RssFeed $rssFeed) {
                 //     return implode(', ', json_decode($rssFeed->category, true));
                 // }),
 
+                //  TD::make('guid', 'GUID')->sort(),
 
-           //     TD::make('guid', 'GUID')->sort(),
-                TD::make('pub_date', 'Publication Date')->render(function (RssFeed $rssFeed) {
-                    return $rssFeed->pub_date ? $rssFeed->pub_date->format('Y-m-d H:i:s') : 'N/A';
+                TD::make('pub_date', 'Publication Date')->sort()->render(function (RssFeed $rssFeed) {
+                    return $rssFeed->pub_date ? Carbon::parse($rssFeed->pub_date)->format('M d, Y h:i A') : 'N/A';
                 }),
-                TD::make('created_at', 'Created At')->sort(),
+                
+                TD::make('created_at', 'Created At')
+                    ->sort()
+                    ->render(function (RssFeed $rssFeed) {
+                        return Carbon::parse($rssFeed->created_at)->format('M d, Y h:i A');
+                    }),
+
+                TD::make('time_diff', 'Time Diff')
+                    ->render(function (RssFeed $rssFeed) {
+                        if ($rssFeed->pub_date) {
+                            $publishedAt = Carbon::parse($rssFeed->pub_date);
+                            $now = Carbon::now();
+                            $diffInHours = $now->diffInHours($publishedAt);
+                            $diffInDays = $now->diffInDays($publishedAt);
+                            return $diffInDays > 0 ? "{$diffInDays} days" : "{$diffInHours} hours";
+                        }
+                        return 'N/A';
+                    }),
             ])
         ];
     }

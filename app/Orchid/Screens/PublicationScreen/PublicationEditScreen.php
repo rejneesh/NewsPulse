@@ -54,11 +54,12 @@ class PublicationEditScreen extends Screen
     public function save(Request $request, Publication $publication)
     {
         $request->validate([
-            // 'publication.publication_name' => 'required|string|max:255',
-            // 'publication.publication_url' => 'required|string|max:255',
-            // 'publication.publication_rank' => 'required|integer',
             'publication.publication_name' => 'required|string|max:255',
-            'publication.publication_url' => 'required|url',
+            'publication.publication_url' => [
+                'required',
+                'url',
+                'regex:/^(?!.*\/$).*$/', // Regular expression to disallow trailing slash
+            ],
             'publication.publication_rank' => 'required|integer',
             'publication.key_map' => 'nullable|json',
         ]);

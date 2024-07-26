@@ -13,19 +13,18 @@ class RssFeed extends Model
     protected $table = 'rss_feed';
 
     protected $primaryKey = 'id';
-
-    // protected $fillable = [
-    //     'publication_id',
-    //     'rss_endpoint_id',
-    //     'title',
-    //     'link',
-    //     'description',
-    //     'category',
-    //     'guid',
-    //     'pub_date',
-    //     'is_processed',
-    // ];
-
+    
+    protected $fillable = [
+        'publication_id',
+        'rss_feed_endpoint_id',
+        'title',
+        'link',
+        'description',
+        'category',
+        'guid',  // Add the 'guid' property here
+        'pub_date',
+        'is_processed',
+    ];
     protected $casts = [
         'category' => 'array', // Cast JSON columns to array
         'pub_date' => 'datetime', // Cast to Carbon date

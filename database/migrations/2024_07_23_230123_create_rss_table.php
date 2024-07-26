@@ -47,7 +47,7 @@ class CreateRssTable extends Migration
         // Create rss_feed table
         Schema::create('rss_feed', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('publication_id')->unsigned();
+        //    $table->bigInteger('publication_id')->unsigned();
             $table->bigInteger('rss_feed_endpoint_id')->unsigned();
             $table->string('title');
             $table->string('link')->unique();
@@ -58,11 +58,11 @@ class CreateRssTable extends Migration
             $table->timestamps();
             $table->boolean('is_processed')->default(0);
 
-            // Foreign key constraints
-            $table->foreign('publication_id')
-                ->references('publication_id')
-                ->on('publication')
-                ->onDelete('restrict');
+            // // Foreign key constraints
+            // $table->foreign('publication_id')
+            //     ->references('publication_id')
+            //     ->on('publication')
+            //     ->onDelete('restrict');
 
             $table->foreign('rss_feed_endpoint_id')
                 ->references('rss_feed_endpoint_id')
