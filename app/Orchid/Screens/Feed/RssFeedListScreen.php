@@ -34,7 +34,7 @@ class RssFeedListScreen extends Screen
                     ->render(function (RssFeed $rssFeed) {
                         return '<a href="' . $rssFeed->link . '" target="_blank">' . "&#128279;" . '</a>';
                     }),
-                TD::make('title', 'Title')->sort(),
+                TD::make('title', 'Title')->sort()->width('500px'), // Set the width to 150 pixels,
 
                 //TD::make('description', 'Description'),
                 // TD::make('category', 'Category')->render(function (RssFeed $rssFeed) {
@@ -55,11 +55,11 @@ class RssFeedListScreen extends Screen
 
                 TD::make('time_diff', 'Time Diff')
                     ->render(function (RssFeed $rssFeed) {
-                        if ($rssFeed->pub_date) {
+                        if ($rssFeed->pub_date && $rssFeed->created_at) {
                             $publishedAt = Carbon::parse($rssFeed->pub_date);
-                            $now = Carbon::now();
-                            $diffInSeconds = $now->diffInSeconds($publishedAt);
-                            $diffInHours = $now->diffInHours($publishedAt);
+                            $createdAt = Carbon::parse($rssFeed->created_at);
+                            $diffInSeconds = $createdAt->diffInSeconds($publishedAt);
+                            $diffInHours = $createdAt->diffInHours($publishedAt);
 
                             return "{$diffInSeconds} Sec ({$diffInHours} Hr)";
                         }

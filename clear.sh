@@ -1,5 +1,6 @@
 #!/bin/bash
 #chmod +x clear.sh
+#sudo ./clear.sh
 # Clear application cache
 php artisan cache:clear
 

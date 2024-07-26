@@ -29,7 +29,13 @@ class FetchRssFeed extends Command
 
                 try {
                     // Fetch the RSS feed
-                    $response = Http::timeout(10)->get($url);
+                    $response = Http::timeout(10)
+                        ->withHeaders([
+                            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                            'Pragma' => 'no-cache',
+                            'Expires' => '0'
+                        ])
+                        ->get($url);
 
                     $statusCode = $response->status(); // Get the HTTP status code
 
