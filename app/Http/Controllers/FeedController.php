@@ -11,7 +11,7 @@ class FeedController extends Controller
 
     public function rssFeedList()
     {
-        $rssFeed = RssFeed::latest()->take(20)->get();
+        $rssFeed = RssFeed::latest('pub_date')->take(20)->get();
 
         return $rssFeed;
     }
